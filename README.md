@@ -1,6 +1,6 @@
 # AssemblyScript Dithering
 
-Implementation of quantization, random and Bayer monochromatic dithering in AssemblyScript based on the (ditherpunk blog article by Surma)[https://surma.dev/things/ditherpunk/].
+Implementation of quantization, random and Bayer monochromatic dithering in AssemblyScript based on the [ditherpunk blog article by Surma](https://surma.dev/things/ditherpunk/).
 
 This is mainly a test project in using WASM and AssemlyScript for image processing.
 
