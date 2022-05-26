@@ -8,6 +8,10 @@ This is mainly a test project in using WASM and AssemlyScript for image processi
 
 The script will read an image into an UInt8ClampedArray to get the raw pixel RGBA values, then send the data to the WASM module to turn it black and white and apply the ditchering without changing the image resolution. Finally, the dithered image is sent back to be rendered onto a `<canvas>`.
 
+## Demo
+
+You can use the demo at <https://vantezzen.github.io/asdithering/>.
+
 ## Usage
 
 1. Clone this repository
