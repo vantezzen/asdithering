@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <label for="image">Image</label>
+    <input type="file" id="image" accept="image/*" />
+
+    <select name="type" id="type">
+      <option value="quantization">Quantization</option>
+      <option value="random">Random Dithering</option>
+      <option value="bayer-3">Bayer Dithering Level 3</option>
+      <option value="bayer-2">Bayer Dithering Level 2</option>
+      <option value="bayer-1">Bayer Dithering Level 1</option>
+      <option value="floydsteinberg">
+        Floyd-Steinberg Diffusion (not working)
+      </option>
+    </select>
+
+    <canvas id="canvas"></canvas>
+
+    <script type="module" src="./scripts/main.js"></script>
+  </body>
+</html>
