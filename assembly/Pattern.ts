@@ -1,28 +1,22 @@
 /**
  * A repeating pattern of 0-255 integers.
  */
-export default class Pattern {
-  public patternData: Uint8ClampedArray;
+export default class Pattern<T extends number = i32> {
+  public patternData: Array<T>;
 
   constructor(public readonly width: i32, public readonly height: i32) {
-    this.patternData = new Uint8ClampedArray(width * height);
+    this.patternData = new Array<T>(width * height);
   }
 
-  public applyData(data: Uint8ClampedArray): void {
-    for (let i = 0; i < data.length; i++) {
-      this.patternData[i] = data[i];
-    }
-  }
-
-  public getPixel(x: i32, y: i32): i32 {
+  public getPixel(x: i32, y: i32): T {
     return this.patternData[y * this.width + x];
   }
 
-  public getPixelWrapped(x: i32, y: i32): i32 {
+  public getPixelWrapped(x: i32, y: i32): T {
     return this.patternData[(y % this.height) * this.width + (x % this.width)];
   }
 
-  public setPixel(x: i32, y: i32, value: i32): void {
+  public setPixel(x: i32, y: i32, value: T): void {
     this.patternData[y * this.width + x] = value;
   }
 
@@ -30,9 +24,21 @@ export default class Pattern {
     return this.width * this.height;
   }
 
-  public normalizeSelf(): void {
-    const normalizer = new PatternNormalizer(this);
-    normalizer.normalize();
+  public getNormalized(): Pattern<f32> {
+    const normalizedPattern = new Pattern<f32>(this.width, this.height);
+    let sum: i32 = 0;
+    for (let i = 0; i < this.length(); i++) {
+      sum += this.patternData[i] as i32;
+    }
+
+    for (let i = 0; i < this.length(); i++) {
+      normalizedPattern.patternData[i] =
+        (this.patternData[i] as f32) / (sum as f32);
+    }
+
+    console.log("After normalization: " + this.toString());
+
+    return normalizedPattern;
   }
 
   public maxValue(): i32 {
@@ -52,31 +58,5 @@ export default class Pattern {
       str += "\n";
     }
     return `${str}>(width: ${this.width}, height: ${this.height})`;
-  }
-}
-
-// Workaround as AssemblyScript currently doesn't support closures
-// Otherwise we could use .map instead()
-class PatternNormalizer {
-  private sum: i32;
-
-  constructor(public pattern: Pattern) {}
-
-  private calculateSum(): void {
-    this.sum = this.pattern.patternData.reduce((sum, v) => sum + v, 0);
-  }
-
-  private normalizePixel(pixel: u8): u8 {
-    return (pixel / this.sum) as u8;
-  }
-
-  public normalize(): void {
-    this.calculateSum();
-
-    for (let i = 0; i < this.pattern.length(); i++) {
-      this.pattern.patternData[i] = this.normalizePixel(
-        this.pattern.patternData[i]
-      );
-    }
   }
 }

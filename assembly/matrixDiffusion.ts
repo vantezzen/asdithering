@@ -7,41 +7,59 @@ export default function matrixErrorDiffusion(
   img: Uint8ClampedArray,
   width: i32,
   height: i32,
-  diffusor: Pattern,
+  diffusorInput: Pattern<f32>,
   quantizeFunc: QuantizationFunc,
   normalize: boolean = true
 ): Uint8ClampedArray {
-  if (normalize) {
-    diffusor.normalizeSelf();
+  const diffusor = normalize ? diffusorInput.getNormalized() : diffusorInput;
+
+  // Convert image to float values for easier manipulation
+  const imagePixels = new Array<f32>(width * height);
+  for (let i = 0; i < imagePixels.length; i++) {
+    imagePixels[i] = img[i] as f32;
   }
 
-  for (let x = 0; x < width; x++) {
-    for (let y = 0; y < height; y++) {
-      const original = img[y * width + x];
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const pixelIndex = (y * width + x) as i32;
+
+      const original = imagePixels[pixelIndex];
       const quantized = quantizeFunc(original);
 
-      if (y * width + x >= img.length) {
-        console.log(`Index out of bounds: ${y * width + x}`);
+      if (pixelIndex >= imagePixels.length) {
+        console.log(`Index out of bounds: ${pixelIndex}`);
       }
-      img[y * width + x] = quantized as u8;
-      const error = original - quantized;
+      imagePixels[pixelIndex] = quantized as f32;
+      const error = (original - quantized) as f32;
 
       for (let diffX = 0; diffX < diffusor.width; diffX++) {
         for (let diffY = 0; diffY < diffusor.height; diffY++) {
-          const diffPixel = diffusor.getPixelWrapped(diffX, diffY);
+          const diffPixel = diffusor.getPixel(diffX, diffY);
 
           const offsetX = diffX + 1 - Math.floor(diffusor.width / 2);
           const offsetY = diffY;
-          const imgPosition = (y + offsetY) * width + x + offsetX;
+          const imgPosition = ((y + offsetY) * width + x + offsetX) as i32;
 
           if (imgPosition < img.length) {
-            img[imgPosition as i32] = (img[y * width + x] +
-              error * (diffPixel as f32)) as u32;
+            const originalPixel = imagePixels[imgPosition];
+            const newPixelValue = originalPixel + error * diffPixel;
+
+            console.log(
+              `Pixel at ${imgPosition}: ${originalPixel} + ${error} * ${diffPixel} = ${newPixelValue}`
+            );
+
+            imagePixels[imgPosition] = newPixelValue;
           }
         }
       }
     }
   }
 
-  return img;
+  // Convert back to Uint8ClampedArray for output
+  const outputArray = new Uint8ClampedArray(imagePixels.length);
+  for (let i = 0; i < imagePixels.length; i++) {
+    outputArray[i] = imagePixels[i] as u8;
+  }
+
+  return outputArray;
 }
