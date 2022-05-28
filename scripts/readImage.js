@@ -30,8 +30,3 @@ export const getImageDataFromImageDataUrl = (dataUrl) => {
     image.onerror = reject;
   });
 };
-
-export const getImageDataFromFile = async (file) => {
-  const dataUrl = await readImageDataUrl(file);
-  return await getImageDataFromImageDataUrl(dataUrl);
-};

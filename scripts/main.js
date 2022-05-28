@@ -1,5 +1,6 @@
 import { applyMonochomaticDithering } from "../build/debug.js";
-import { getImageDataFromFile } from "./readImage.js";
+import outputOriginalImage from "./outputOriginalImage.js";
+import { getImageDataFromImageDataUrl, readImageDataUrl } from "./readImage.js";
 import renderMonochromaticImageToCanvas from "./renderMonochromaticImageToCanvas.js";
 
 const imageInput = document.getElementById("image");
@@ -11,8 +12,9 @@ const applyDithering = async () => {
   }
 
   // 1. Preparing image
-  const imageData = await getImageDataFromFile(file);
-  console.log("imageData", imageData);
+  const dataUrl = await readImageDataUrl(file);
+  const imageData = await getImageDataFromImageDataUrl(dataUrl);
+  outputOriginalImage(dataUrl);
 
   // 2. Applying dithering using WASM module
   const result = applyMonochomaticDithering(
