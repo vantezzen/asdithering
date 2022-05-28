@@ -38,10 +38,11 @@ const calculatePixelValue = (
   y: i32,
   width: i32,
   pixelData: Uint8ClampedArray,
-  bayer: Pattern
+  bayer: Pattern,
+  bayerMultiplier: i32
 ): i32 => {
   const pixel = pixelData[y * width + x];
-  const bayerPixel = bayer.getPixelWrapped(x, y) as u8;
+  const bayerPixel = (bayer.getPixelWrapped(x, y) * bayerMultiplier) as u8;
   return pixel > bayerPixel ? 255 : 0;
 };
 
@@ -53,6 +54,8 @@ export default function bayerDithering(
 ): Uint8ClampedArray {
   const bayer = calculateBayerLevel(level);
   const outputArray = new Uint8ClampedArray(pixelData.length);
+  const maxBayerValue = 2 ** (2 + level * 2) - 1;
+  const bayerMultiplier = 255 / maxBayerValue;
 
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
@@ -61,7 +64,8 @@ export default function bayerDithering(
         y,
         width,
         pixelData,
-        bayer
+        bayer,
+        bayerMultiplier
       );
     }
   }

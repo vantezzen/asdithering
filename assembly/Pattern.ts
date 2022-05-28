@@ -35,6 +35,14 @@ export default class Pattern {
     normalizer.normalize();
   }
 
+  public maxValue(): i32 {
+    let max: i32 = 0;
+    for (let i = 0; i < this.patternData.length; i++) {
+      max = Math.max(max, this.patternData[i]) as i32;
+    }
+    return max;
+  }
+
   public toString(): string {
     let str = "Pattern<";
     for (let y = 0; y < this.height; y++) {
