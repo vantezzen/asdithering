@@ -8,7 +8,7 @@
  (type $i32_=>_i32 (func (param i32) (result i32)))
  (type $i32_i32_i32_i32_=>_none (func (param i32 i32 i32 i32)))
  (type $i32_i32_=>_none (func (param i32 i32)))
- (type $i32_i32_i32_i32_i32_=>_i32 (func (param i32 i32 i32 i32 i32) (result i32)))
+ (type $i32_i32_i32_i32_i32_i32_=>_i32 (func (param i32 i32 i32 i32 i32 i32) (result i32)))
  (type $f32_=>_f32 (func (param f32) (result f32)))
  (type $none_=>_i32 (func (result i32)))
  (type $none_=>_f64 (func (result f64)))
@@ -1648,7 +1648,7 @@
   i32.add
   i32.load8_u
  )
- (func $start:assembly/ditheringTypes/bayer~anonymous|0 (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (param $4 i32) (result i32)
+ (func $start:assembly/ditheringTypes/bayer~anonymous|0 (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (param $4 i32) (param $5 i32) (result i32)
   i32.const 255
   i32.const 0
   local.get $3
@@ -1662,6 +1662,8 @@
   local.get $0
   local.get $1
   call $assembly/Pattern/Pattern#getPixelWrapped
+  local.get $5
+  i32.mul
   i32.const 255
   i32.and
   i32.gt_u
@@ -4052,6 +4054,7 @@
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
+  (local $7 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 8
   i32.sub
@@ -4082,6 +4085,26 @@
   call $~lib/typedarray/Uint8ClampedArray#constructor
   local.tee $5
   i32.store offset=4
+  i32.const 255
+  i32.const 1
+  local.get $3
+  i32.const 1
+  i32.shl
+  i32.const 255
+  i32.and
+  i32.const 2
+  i32.add
+  local.tee $3
+  i32.shl
+  i32.const 0
+  local.get $3
+  i32.const 32
+  i32.lt_u
+  select
+  i32.const 1
+  i32.sub
+  i32.div_s
+  local.set $7
   i32.const 0
   local.set $3
   loop $for-loop|0
@@ -4107,9 +4130,10 @@
       local.get $1
       local.get $0
       local.get $6
+      local.get $7
       i32.const 1632
       i32.load
-      call_indirect $0 (type $i32_i32_i32_i32_i32_=>_i32)
+      call_indirect $0 (type $i32_i32_i32_i32_i32_i32_=>_i32)
       call $~lib/typedarray/Uint8ClampedArray#__set
       local.get $4
       i32.const 1
