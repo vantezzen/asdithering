@@ -31,7 +31,7 @@ async function instantiate(module, imports = {}) {
   const adaptedExports = Object.setPrototypeOf({
     applyMonochomaticDithering(pixelData, ditheringType, width, height) {
       // assembly/index/applyMonochomaticDithering(~lib/typedarray/Uint8ClampedArray, ~lib/string/String, i32, i32) => ~lib/typedarray/Uint8ClampedArray
-      pixelData = __retain(__lowerTypedArray(Uint8ClampedArray, 4, 0, pixelData) || __notnull());
+      pixelData = __retain(__lowerTypedArray(Uint8ClampedArray, 6, 0, pixelData) || __notnull());
       ditheringType = __lowerString(ditheringType) || __notnull();
       try {
         return __liftTypedArray(Uint8ClampedArray, exports.applyMonochomaticDithering(pixelData, ditheringType, width, height) >>> 0);
